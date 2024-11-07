@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Param } from '@nestjs/common';
+import { Controller, Get, Post, Res, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
 import { validate as isValidUUID } from 'uuid';
@@ -23,9 +23,21 @@ export class UsersController {
     const user = this.usersService.findUserById(id);
 
     if (user) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       return res.status(200).json(user);
     } else {
       return res.status(404).json({ message: 'User not found' });
+    }
+  }
+
+  @Post()
+  createUser(@Body() body: CreateUserDto, @Res() res: Response) {
+    const { login, password } = body;
+    if (!login || !password) {
+      return res.status(400).json('Please enter all information');
+    } else {
+      const newUser = this.usersService.createNewUser(body);
+      return res.status(201).json(newUser);
     }
   }
 }

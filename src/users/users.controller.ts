@@ -80,7 +80,6 @@ export class UsersController {
       return;
     }
     if (userToDelete) {
-      const currentUsers = this.usersService.deleteUser(id);
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       return res.status(204).send();
     } else {

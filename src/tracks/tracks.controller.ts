@@ -33,7 +33,7 @@ export class TracksController {
     if (track) {
       return res.status(200).json(track);
     } else {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'Track not found' });
     }
   }
 
@@ -43,8 +43,8 @@ export class TracksController {
     if (!id || !name || !artistId || !albumId || !duration) {
       return res.status(400).json('Please enter all information');
     } else {
-      const newUser = this.tracksService.createNewTrack(body);
-      return res.status(201).json(newUser);
+      const newTrack = this.tracksService.createNewTrack(body);
+      return res.status(201).json(newTrack);
     }
   }
 

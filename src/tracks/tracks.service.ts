@@ -22,7 +22,7 @@ export class TracksService {
     },
   ];
   createNewTrack(createTrackDto: CreateTrackDto): Track {
-    const newTrack: Track = {
+    const newTrack = {
       id: uuid(),
       name: createTrackDto.name,
       artistId: createTrackDto.artistId || null,
@@ -50,8 +50,8 @@ export class TracksService {
     return updatedUser;
   }
 
-  deleteTrack(id) {
-    const currentTracks = this.tracks.filter((user) => user.id !== id);
+  deleteTrack(id: string) {
+    const currentTracks = this.tracks.filter((track) => track.id !== id);
     this.tracks = currentTracks;
   }
 }

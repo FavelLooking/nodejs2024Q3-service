@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
-import { validateUUID } from 'src/helpers/helpers';
+import { validateUUID } from '../helpers/helpers';
 
 @Controller('user')
 export class UsersController {
@@ -75,8 +75,16 @@ export class UsersController {
   }
   @Delete(':id')
   deleteUser(@Param('id') id: string, @Res() res: Response) {
+    const userToDelete = this.usersService.findUserById(id);
     if (!validateUUID(id, res)) {
       return;
+    }
+    if (userToDelete) {
+      const currentUsers = this.usersService.deleteUser(id);
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      return res.status(204).send();
+    } else {
+      return res.status(404).json({ message: 'User not found' });
     }
   }
 }

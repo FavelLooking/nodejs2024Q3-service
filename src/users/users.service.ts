@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { version } from 'os';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
+  private users = [
     {
       id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
       login: 'newUser',
@@ -51,5 +50,9 @@ export class UsersService {
       updatedAt: Date.now(),
     };
     return updatedUser;
+  }
+  deleteUser(id) {
+    const currentUsers = this.users.filter((user) => user.id !== id);
+    this.users = currentUsers;
   }
 }

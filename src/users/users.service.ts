@@ -41,4 +41,15 @@ export class UsersService {
     this.users.push(newUser);
     return newUser;
   }
+  updateUserPassword(id, body: UpdatePasswordDto) {
+    const userToUpdate = this.findUserById(id);
+
+    const updatedUser = {
+      ...userToUpdate,
+      password: body.newPassword,
+      version: (userToUpdate.version += 1),
+      updatedAt: Date.now(),
+    };
+    return updatedUser;
+  }
 }

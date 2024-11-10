@@ -16,7 +16,7 @@ export class UsersService {
       id: '1f1f2e2b-846b-4265-bb96-7ec7d1c7c7c7',
       login: 'NewUser1',
       password: 'password1234',
-      version: 2,
+      version: 1,
       createdAt: 1640995200000,
       updatedAt: 1643587200000,
     },
@@ -38,21 +38,27 @@ export class UsersService {
       updatedAt: Number(new Date()),
     };
     this.users.push(newUser);
-    return newUser;
+    const { password: _, ...userWithoutPassword } = newUser;
+    return userWithoutPassword;
   }
-  updateUserPassword(id, body: UpdatePasswordDto) {
+  updateUserPassword(id: string, body: UpdatePasswordDto) {
     const userToUpdate = this.findUserById(id);
 
-    const updatedUser = {
-      ...userToUpdate,
-      password: body.newPassword,
-      version: (userToUpdate.version += 1),
-      updatedAt: Date.now(),
-    };
-    return updatedUser;
+    userToUpdate.password = body.newPassword;
+    userToUpdate.version += 1;
+    userToUpdate.updatedAt = Date.now();
+    const { password, ...userWithoutPassword } = userToUpdate;
+    this.saveUser(userToUpdate);
+    return userWithoutPassword;
   }
-  deleteUser(id) {
+  saveUser(updatedUser: User) {
+    const index = this.users.findIndex((user) => user.id === updatedUser.id);
+    if (index !== -1) {
+      this.users[index] = updatedUser;
+    }
+  }
+  deleteUser(id: string) {
     const currentUsers = this.users.filter((user) => user.id !== id);
-    this.users = currentUsers;
+    this.users = [...currentUsers];
   }
 }

@@ -7,10 +7,14 @@ import {
   Body,
   Put,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
 import { validateUUID } from '../helpers/helpers';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('user')
 export class UsersController {
@@ -20,7 +24,6 @@ export class UsersController {
   getAllUsers(@Res() res: Response) {
     //don't forget to use async in next parts of this task
     const users = this.usersService.findAll();
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     return res.status(200).json(users);
   }
   @Get(':id')
@@ -32,7 +35,6 @@ export class UsersController {
     const user = this.usersService.findUserById(id);
 
     if (user) {
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       return res.status(200).json(user);
     } else {
       return res.status(404).json({ message: 'User not found' });
@@ -61,12 +63,12 @@ export class UsersController {
     }
 
     if (userToUpdate) {
+      console.log(userToUpdate.password, body.oldPassword);
       if (userToUpdate.password !== body.oldPassword) {
         return res
           .status(403)
           .json({ message: 'Please enter correct old password' });
       }
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       const updatedUser = this.usersService.updateUserPassword(id, body);
       return res.status(200).json(updatedUser);
     } else {
@@ -74,13 +76,14 @@ export class UsersController {
     }
   }
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   deleteUser(@Param('id') id: string, @Res() res: Response) {
     const userToDelete = this.usersService.findUserById(id);
     if (!validateUUID(id, res)) {
       return;
     }
     if (userToDelete) {
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      this.usersService.deleteUser(id);
       return res.status(204).send();
     } else {
       return res.status(404).json({ message: 'User not found' });

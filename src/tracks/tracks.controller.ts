@@ -31,7 +31,7 @@ export class TracksController {
     }
     const track = this.tracksService.findTrackById(id);
     if (track) {
-      return res.status(200).json(track);
+      return res.status(201).json(track);
     } else {
       return res.status(404).json({ message: 'Track not found' });
     }
@@ -69,6 +69,7 @@ export class TracksController {
 
   @Delete(':id')
   deleteTracks(@Param('id') id: string, @Res() res: Response) {
+    console.log(id, res);
     if (!validateUUID(id, res)) {
       return;
     }

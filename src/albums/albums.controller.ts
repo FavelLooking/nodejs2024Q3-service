@@ -39,8 +39,8 @@ export class AlbumsController {
 
   @Post()
   createAlbum(@Body() body: CreateAlbumDto, @Res() res: Response) {
-    const { id, name, artistId, year } = body;
-    if (!id || !name || !artistId || !year) {
+    const { name, year } = body;
+    if (!name || !year) {
       return res.status(400).json('Please enter all information');
     } else {
       const newAlbum = this.albumsService.createNewAlbum(body);

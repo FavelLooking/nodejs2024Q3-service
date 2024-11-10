@@ -39,8 +39,8 @@ export class ArtistsController {
 
   @Post()
   createArtist(@Body() body: CreateArtistDto, @Res() res: Response) {
-    const { id, name, grammy } = body;
-    if (!id || !name || !grammy) {
+    const { name, grammy } = body;
+    if (!name || typeof grammy !== 'boolean') {
       return res.status(400).json('Please enter all information');
     } else {
       const newArtist = this.artistsService.createNewArtist(body);
@@ -74,6 +74,7 @@ export class ArtistsController {
     }
     const artistToDelete = this.artistsService.findArtistById(id);
     if (artistToDelete) {
+      this.artistsService.deleteArtist(id);
       return res.status(204).send();
     } else {
       return res.status(404).json({ message: 'Artist not found' });

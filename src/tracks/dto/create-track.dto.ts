@@ -1,9 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString, IsOptional } from 'class-validator';
 
 export class CreateTrackDto {
-  // @IsString()
-  // @IsNotEmpty()
-  // id: string;
   @IsNotEmpty()
   @IsString()
   name: string;

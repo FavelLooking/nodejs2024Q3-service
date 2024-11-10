@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class TracksService {
-  private tracks = [
+  static tracks = [
     {
       id: 'b3e82d45-bfd2-4e52-9d27-df6fa97f6a32',
       name: 'Track 1 Name',
@@ -29,16 +29,16 @@ export class TracksService {
       albumId: createTrackDto.albumId || null,
       duration: +createTrackDto.duration,
     };
-    this.tracks.push(newTrack);
+    TracksService.tracks.push(newTrack);
     return newTrack;
   }
 
   findAll() {
-    return this.tracks;
+    return TracksService.tracks;
   }
 
   findTrackById(id: string) {
-    return this.tracks.find((track) => track.id === id);
+    return TracksService.tracks.find((track) => track.id === id);
   }
 
   updateTrack(id: string, body: UpdateTrackDto) {
@@ -51,7 +51,9 @@ export class TracksService {
   }
 
   deleteTrack(id: string) {
-    const currentTracks = this.tracks.filter((track) => track.id !== id);
-    this.tracks = [...currentTracks];
+    const currentTracks = TracksService.tracks.filter(
+      (track) => track.id !== id,
+    );
+    TracksService.tracks = [...currentTracks];
   }
 }

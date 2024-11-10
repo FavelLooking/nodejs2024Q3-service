@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AlbumsService {
-  private albums = [
+  static albums = [
     {
       id: 'a4b9f123-e34d-41c8-b8d5-8c5a6c5d6e34',
       name: 'Dookie',
@@ -26,16 +26,16 @@ export class AlbumsService {
       artistId: createAlbumDto.artistId || null,
       year: createAlbumDto.year,
     };
-    this.albums.push(newAlbum);
+    AlbumsService.albums.push(newAlbum);
     return newAlbum;
   }
 
   findAll() {
-    return this.albums;
+    return AlbumsService.albums;
   }
 
   findAlbumById(id: string) {
-    return this.albums.find((album) => album.id === id);
+    return AlbumsService.albums.find((album) => album.id === id);
   }
 
   updateAlbum(id: string, body: UpdateAlbumDto) {
@@ -48,7 +48,9 @@ export class AlbumsService {
   }
 
   deleteAlbum(id: string) {
-    const currentAlbums = this.albums.filter((album) => album.id !== id);
-    this.albums = currentAlbums;
+    const currentAlbums = AlbumsService.albums.filter(
+      (album) => album.id !== id,
+    );
+    AlbumsService.albums = currentAlbums;
   }
 }

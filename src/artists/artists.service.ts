@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { v4 as uuid } from 'uuid';
+import { TracksService } from '../tracks/tracks.service';
+import { AlbumsService } from '../albums/albums.service';
 
 @Injectable()
 export class ArtistsService {
@@ -45,7 +47,20 @@ export class ArtistsService {
   }
 
   deleteArtist(id: string) {
-    const currentArtist = this.artists.filter((artist) => artist.id !== id);
-    this.artists = currentArtist;
+    this.artists = this.artists.filter((artist) => artist.id !== id);
+
+    TracksService.tracks = TracksService.tracks.map((track) => {
+      if (track.artistId === id) {
+        return { ...track, artistId: null };
+      }
+      return track;
+    });
+
+    AlbumsService.albums = AlbumsService.albums.map((album) => {
+      if (album.artistId === id) {
+        return { ...album, artistId: null };
+      }
+      return album;
+    });
   }
 }

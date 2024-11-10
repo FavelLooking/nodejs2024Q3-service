@@ -52,6 +52,6 @@ export class TracksService {
 
   deleteTrack(id: string) {
     const currentTracks = this.tracks.filter((track) => track.id !== id);
-    this.tracks = currentTracks;
+    this.tracks = [...currentTracks];
   }
 }

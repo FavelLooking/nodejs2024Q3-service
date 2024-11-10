@@ -31,7 +31,7 @@ export class TracksController {
     }
     const track = this.tracksService.findTrackById(id);
     if (track) {
-      return res.status(201).json(track);
+      return res.status(200).json(track);
     } else {
       return res.status(404).json({ message: 'Track not found' });
     }
@@ -39,8 +39,8 @@ export class TracksController {
 
   @Post()
   createTrack(@Body() body: CreateTrackDto, @Res() res: Response) {
-    const { id, name, artistId, albumId, duration } = body;
-    if (!id || !name || !artistId || !albumId || !duration) {
+    const { name, duration } = body;
+    if (!name || !duration) {
       return res.status(400).json('Please enter all information');
     } else {
       const newTrack = this.tracksService.createNewTrack(body);
@@ -69,15 +69,15 @@ export class TracksController {
 
   @Delete(':id')
   deleteTracks(@Param('id') id: string, @Res() res: Response) {
-    console.log(id, res);
     if (!validateUUID(id, res)) {
       return;
     }
     const userToDelete = this.tracksService.findTrackById(id);
     if (userToDelete) {
+      this.tracksService.deleteTrack(id);
       return res.status(204).send();
     } else {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'Track not found' });
     }
   }
 }

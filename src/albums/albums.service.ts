@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { v4 as uuid } from 'uuid';
+import { TracksService } from '../tracks/tracks.service';
 
 @Injectable()
 export class AlbumsService {
@@ -51,6 +52,13 @@ export class AlbumsService {
     const currentAlbums = AlbumsService.albums.filter(
       (album) => album.id !== id,
     );
-    AlbumsService.albums = currentAlbums;
+    AlbumsService.albums = [...currentAlbums];
+
+    TracksService.tracks = TracksService.tracks.map((track) => {
+      if (track.albumId === id) {
+        return { ...track, albumId: null };
+      }
+      return track;
+    });
   }
 }

@@ -72,8 +72,9 @@ export class AlbumsController {
     if (!validateUUID(id, res)) {
       return;
     }
-    const userToDelete = this.albumsService.findAlbumById(id);
-    if (userToDelete) {
+    const albumToDelete = this.albumsService.findAlbumById(id);
+    if (albumToDelete) {
+      this.albumsService.deleteAlbum(id);
       return res.status(204).send();
     } else {
       return res.status(404).json({ message: 'Album not found' });

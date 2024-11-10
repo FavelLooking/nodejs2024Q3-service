@@ -7,7 +7,7 @@ import { AlbumsService } from '../albums/albums.service';
 
 @Injectable()
 export class ArtistsService {
-  private artists = [
+  static artists = [
     {
       id: 'd1a4c8f3-6b2f-45e1-9a8b-12e4c5a7b6f1',
       name: 'Green Day',
@@ -25,16 +25,16 @@ export class ArtistsService {
       name: body.name,
       grammy: body.grammy,
     };
-    this.artists.push(newArtist);
+    ArtistsService.artists.push(newArtist);
     return newArtist;
   }
 
   findAll() {
-    return this.artists;
+    return ArtistsService.artists;
   }
 
   findArtistById(id: string) {
-    return this.artists.find((artist) => artist.id === id);
+    return ArtistsService.artists.find((artist) => artist.id === id);
   }
 
   updateArtist(id: string, body: UpdateArtistDto) {
@@ -47,7 +47,9 @@ export class ArtistsService {
   }
 
   deleteArtist(id: string) {
-    this.artists = this.artists.filter((artist) => artist.id !== id);
+    ArtistsService.artists = ArtistsService.artists.filter(
+      (artist) => artist.id !== id,
+    );
 
     TracksService.tracks = TracksService.tracks.map((track) => {
       if (track.artistId === id) {

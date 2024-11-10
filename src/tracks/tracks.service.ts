@@ -43,11 +43,11 @@ export class TracksService {
 
   updateTrack(id: string, body: UpdateTrackDto) {
     const trackToUpdate = this.findTrackById(id);
-    const updatedUser = {
+    const updatedTrack = {
       ...trackToUpdate,
       ...body,
     };
-    return updatedUser;
+    return updatedTrack;
   }
 
   deleteTrack(id: string) {

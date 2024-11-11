@@ -15,7 +15,9 @@ import { Response } from 'express';
 import { validateUUID } from '../helpers/helpers';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

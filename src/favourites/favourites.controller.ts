@@ -10,8 +10,10 @@ import {
 import { Response } from 'express';
 import { validateUUID } from '../helpers/helpers';
 import { FavouritesService } from './favourites.service';
+import { ApiTags } from '@nestjs/swagger';
 //import { CreateFavouriteTrackDto } from './dto/create-favourite.dto';
 
+@ApiTags('favorites')
 @Controller('favs')
 export class FavouritesController {
   constructor(private readonly favouritesService: FavouritesService) {}

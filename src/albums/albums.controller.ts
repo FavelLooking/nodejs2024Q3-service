@@ -13,7 +13,9 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Response } from 'express';
 import { validateUUID } from '../helpers/helpers';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('album')
 @Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}

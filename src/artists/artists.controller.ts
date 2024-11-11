@@ -13,7 +13,9 @@ import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { validateUUID } from '../helpers/helpers';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('artist')
 @Controller('artist')
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}

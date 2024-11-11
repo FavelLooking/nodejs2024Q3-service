@@ -3,16 +3,14 @@ import {
   Get,
   Post,
   Body,
-  Put,
   Param,
   Delete,
   Res,
-  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { validateUUID } from '../helpers/helpers';
 import { FavouritesService } from './favourites.service';
-import { CreateFavouriteTrackDto } from './dto/create-favourite.dto';
+//import { CreateFavouriteTrackDto } from './dto/create-favourite.dto';
 
 @Controller('favs')
 export class FavouritesController {

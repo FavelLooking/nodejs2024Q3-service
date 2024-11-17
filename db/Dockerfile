@@ -1,0 +1,5 @@
+FROM postgres:15-alpine
+
+ENV POSTGRES_USER=myuser \
+    POSTGRES_PASSWORD=mypassword \
+    POSTGRES_DB=mydatabase

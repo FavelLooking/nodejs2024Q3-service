@@ -23,18 +23,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getAllUsers(@Res() res: Response) {
-    //don't forget to use async in next parts of this task
-    const users = this.usersService.findAll();
+  async getAllUsers(@Res() res: Response) {
+    const users = await this.usersService.findAll();
     return res.status(200).json(users);
   }
   @Get(':id')
-  getUserById(@Param('id') id: string, @Res() res: Response) {
+  async getUserById(@Param('id') id: string, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
     }
 
-    const user = this.usersService.findUserById(id);
+    const user = await this.usersService.findUserById(id);
 
     if (user) {
       return res.status(200).json(user);
@@ -44,34 +43,33 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() body: CreateUserDto, @Res() res: Response) {
+  async createUser(@Body() body: CreateUserDto, @Res() res: Response) {
     const { login, password } = body;
     if (!login || !password) {
       return res.status(400).json('Please enter all information');
     } else {
-      const newUser = this.usersService.createNewUser(body);
+      const newUser = await this.usersService.createNewUser(body);
       return res.status(201).json(newUser);
     }
   }
   @Put(':id')
-  updateUserPassword(
+  async updateUserPassword(
     @Param('id') id: string,
     @Body() body: UpdatePasswordDto,
     @Res() res: Response,
   ) {
-    const userToUpdate = this.usersService.findUserById(id);
+    const userToUpdate = await this.usersService.findUserById(id);
     if (!validateUUID(id, res)) {
       return;
     }
 
     if (userToUpdate) {
-      console.log(userToUpdate.password, body.oldPassword);
       if (userToUpdate.password !== body.oldPassword) {
         return res
           .status(403)
           .json({ message: 'Please enter correct old password' });
       }
-      const updatedUser = this.usersService.updateUserPassword(id, body);
+      const updatedUser = await this.usersService.updateUserPassword(id, body);
       return res.status(200).json(updatedUser);
     } else {
       return res.status(404).json({ message: 'User not found' });
@@ -79,13 +77,13 @@ export class UsersController {
   }
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUser(@Param('id') id: string, @Res() res: Response) {
-    const userToDelete = this.usersService.findUserById(id);
+  async deleteUser(@Param('id') id: string, @Res() res: Response) {
+    const userToDelete = await this.usersService.findUserById(id);
     if (!validateUUID(id, res)) {
       return;
     }
     if (userToDelete) {
-      this.usersService.deleteUser(id);
+      await this.usersService.deleteUser(id);
       return res.status(204).send();
     } else {
       return res.status(404).json({ message: 'User not found' });

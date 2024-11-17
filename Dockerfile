@@ -1,15 +1,14 @@
-FROM node:22.9.0
+
+FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
-RUN npm install
+RUN npm install --production --force && npm cache clean --force
 
 COPY . .
 
-RUN npm run build
+EXPOSE 3000
 
-EXPOSE 4000
-
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "start"]

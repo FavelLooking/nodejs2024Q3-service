@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app-container
+    restart: always
     ports:
       - '${PORT}:${PORT}'
     env_file:
@@ -26,6 +27,7 @@ services:
       context: ./db
       dockerfile: Dockerfile
     container_name: postgres-container
+    restart: always
     ports:
       - '5432:5432'
     environment:

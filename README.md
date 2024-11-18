@@ -65,8 +65,13 @@ npm run lint
 npm run format
 ```
 
-### Debugging in VSCode
+## Containerization with Docker
 
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+1. Build and start the containers:
+```
+docker-compose up --build
+```
+2. To stop the containers:
+```
+docker-compose down
+```

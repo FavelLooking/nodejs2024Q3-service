@@ -4,65 +4,55 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { v4 as uuid } from 'uuid';
 import { TracksService } from '../tracks/tracks.service';
 import { AlbumsService } from '../albums/albums.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class ArtistsService {
-  static artists = [
-    {
-      id: 'd1a4c8f3-6b2f-45e1-9a8b-12e4c5a7b6f1',
-      name: 'Green Day',
-      grammy: true,
-    },
-    {
-      id: 'b2d5e4c1-7c3a-48d3-8b2d-34e5d6b8a9c2',
-      name: 'Iggy Pop',
-      grammy: false,
-    },
-  ];
-  createNewArtist(body: CreateArtistDto) {
-    const newArtist = {
-      id: uuid(),
-      name: body.name,
-      grammy: body.grammy,
-    };
-    ArtistsService.artists.push(newArtist);
+  constructor(private prisma: PrismaService) {}
+
+  async createNewArtist(body: CreateArtistDto) {
+    const newArtist = await this.prisma.artist.create({
+      data: {
+        name: body.name,
+        grammy: body.grammy,
+      },
+    });
     return newArtist;
   }
 
-  findAll() {
-    return ArtistsService.artists;
+  async findAll() {
+    return await this.prisma.artist.findMany();
   }
 
-  findArtistById(id: string) {
-    return ArtistsService.artists.find((artist) => artist.id === id);
+  async findArtistById(id: string) {
+    return await this.prisma.artist.findUnique({ where: { id } });
   }
 
-  updateArtist(id: string, body: UpdateArtistDto) {
-    const artistToUpdate = this.findArtistById(id);
-    const updatedArtist = {
-      ...artistToUpdate,
-      ...body,
-    };
-    return updatedArtist;
+  async updateArtist(id: string, body: UpdateArtistDto) {
+    const artistToUpdate = await this.findArtistById(id);
+    if (!artistToUpdate) {
+      throw new Error('Artist not found');
+    }
+
+    return await this.prisma.artist.update({
+      where: { id },
+      data: body,
+    });
   }
-
-  deleteArtist(id: string) {
-    ArtistsService.artists = ArtistsService.artists.filter(
-      (artist) => artist.id !== id,
-    );
-
-    TracksService.tracks = TracksService.tracks.map((track) => {
-      if (track.artistId === id) {
-        return { ...track, artistId: null };
-      }
-      return track;
+  async deleteArtist(id: string) {
+    await this.prisma.album.updateMany({
+      where: { artistId: id },
+      data: { artistId: null },
     });
 
-    AlbumsService.albums = AlbumsService.albums.map((album) => {
-      if (album.artistId === id) {
-        return { ...album, artistId: null };
-      }
-      return album;
+    await this.prisma.track.updateMany({
+      where: { artistId: id },
+      data: { artistId: null },
+    });
+
+    await this.prisma.artist.delete({
+      where: { id },
     });
   }
 }

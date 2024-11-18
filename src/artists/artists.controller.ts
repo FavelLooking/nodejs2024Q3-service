@@ -21,17 +21,17 @@ export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Get()
-  getAllArtists(@Res() res: Response) {
-    const artists = this.artistsService.findAll();
+  async getAllArtists(@Res() res: Response) {
+    const artists = await this.artistsService.findAll();
     return res.status(200).json(artists);
   }
 
   @Get(':id')
-  getArtistById(@Param('id') id: string, @Res() res: Response) {
+  async getArtistById(@Param('id') id: string, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
     }
-    const artist = this.artistsService.findArtistById(id);
+    const artist = await this.artistsService.findArtistById(id);
     if (artist) {
       return res.status(200).json(artist);
     } else {
@@ -40,29 +40,29 @@ export class ArtistsController {
   }
 
   @Post()
-  createArtist(@Body() body: CreateArtistDto, @Res() res: Response) {
+  async createArtist(@Body() body: CreateArtistDto, @Res() res: Response) {
     const { name, grammy } = body;
     if (!name || typeof grammy !== 'boolean') {
       return res.status(400).json('Please enter all information');
     } else {
-      const newArtist = this.artistsService.createNewArtist(body);
+      const newArtist = await this.artistsService.createNewArtist(body);
       return res.status(201).json(newArtist);
     }
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() body: UpdateArtistDto,
     @Res() res: Response,
   ) {
-    const artistToUpdate = this.artistsService.findArtistById(id);
+    const artistToUpdate = await this.artistsService.findArtistById(id);
     if (!validateUUID(id, res)) {
       return;
     }
 
     if (artistToUpdate) {
-      const updatedArtist = this.artistsService.updateArtist(id, body);
+      const updatedArtist = await this.artistsService.updateArtist(id, body);
       return res.status(200).json(updatedArtist);
     } else {
       return res.status(404).json({ message: 'Artist not found' });
@@ -70,13 +70,13 @@ export class ArtistsController {
   }
 
   @Delete(':id')
-  deleteArtist(@Param('id') id: string, @Res() res: Response) {
+  async deleteArtist(@Param('id') id: string, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
     }
-    const artistToDelete = this.artistsService.findArtistById(id);
+    const artistToDelete = await this.artistsService.findArtistById(id);
     if (artistToDelete) {
-      this.artistsService.deleteArtist(id);
+      await this.artistsService.deleteArtist(id);
       return res.status(204).send();
     } else {
       return res.status(404).json({ message: 'Artist not found' });

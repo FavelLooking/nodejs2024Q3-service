@@ -1,48 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { v4 as uuid } from 'uuid';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class TracksService {
-  static tracks = [
-    {
-      id: 'b3e82d45-bfd2-4e52-9d27-df6fa97f6a32',
-      name: 'Track 1 Name',
-      artistId: 'd97f4824-d85c-4bfa-bcd2-6fd7b8439d67',
-      albumId: 'f5c248e9-c5d2-47db-83b1-4b5fe9886a34',
-      duration: 240,
-    },
-    {
-      id: 'c5b32f79-1fbd-4b09-96a5-d15d52270e19',
-      name: 'Track 2 Name',
-      artistId: 'dbf2b8d2-d5b2-4d85-9f58-cb5d6b2b302b',
-      albumId: 'f5c248e9-c5d2-47db-83b1-4b5fe9886a34',
-      duration: 180,
-    },
-  ];
-  createNewTrack(createTrackDto: CreateTrackDto): Track {
-    const newTrack = {
-      id: uuid(),
-      name: createTrackDto.name,
-      artistId: createTrackDto.artistId || null,
-      albumId: createTrackDto.albumId || null,
-      duration: +createTrackDto.duration,
-    };
-    TracksService.tracks.push(newTrack);
+  constructor(private prisma: PrismaService) {}
+  async createNewTrack(createTrackDto: CreateTrackDto) {
+    const newTrack = this.prisma.track.create({
+      data: {
+        name: createTrackDto.name,
+        artistId: createTrackDto.artistId || null,
+        albumId: createTrackDto.albumId || null,
+        duration: +createTrackDto.duration,
+      },
+    });
     return newTrack;
   }
 
-  findAll() {
-    return TracksService.tracks;
+  async findAll() {
+    return await this.prisma.track.findMany();
   }
 
-  findTrackById(id: string) {
-    return TracksService.tracks.find((track) => track.id === id);
+  async findTrackById(id: string) {
+    return this.prisma.track.findUnique({ where: { id } });
   }
 
-  updateTrack(id: string, body: UpdateTrackDto) {
-    const trackToUpdate = this.findTrackById(id);
+  async updateTrack(id: string, body: UpdateTrackDto) {
+    const trackToUpdate = await this.findTrackById(id);
     const updatedTrack = {
       ...trackToUpdate,
       ...body,
@@ -50,10 +35,7 @@ export class TracksService {
     return updatedTrack;
   }
 
-  deleteTrack(id: string) {
-    const currentTracks = TracksService.tracks.filter(
-      (track) => track.id !== id,
-    );
-    TracksService.tracks = [...currentTracks];
+  async deleteTrack(id: string) {
+    const currentTracks = await this.prisma.track.delete({ where: { id } });
   }
 }

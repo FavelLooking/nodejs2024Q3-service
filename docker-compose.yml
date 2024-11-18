@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app-container
+    image: nodejs2024q3-service-app:latest
     restart: always
     ports:
       - '${PORT}:${PORT}'
@@ -29,11 +30,11 @@ services:
     container_name: postgres-container
     restart: always
     ports:
-      - '5432:5432'
+      - '${DB_PORT}:${DB_PORT}'
     environment:
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=mypassword
-      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:

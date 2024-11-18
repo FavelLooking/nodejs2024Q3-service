@@ -21,7 +21,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "docker-audit": "docker-compose exec app npm audit",
-    "docker-up-and-audit": "docker-compose up -d && docker-compose exec app npm audit"
+    "docker-up-and-audit": "docker-compose up -d && docker-compose exec app npm audit",
+    "docker-push": "docker push yourdockerhubusername/my-app:latest"
   },
   "dependencies": {
     "@nestjs/cli": "^10.4.7",

@@ -8,61 +8,15 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/your-repo.git
 ```
-
+```
+cd your-repo
+```
 ## Installing NPM modules
 
 ```
 npm install
-```
-
-## Running application
-
-```
-npm start
-```
-
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/api/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
-
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
 ```
 
 ## Containerization with Docker
@@ -71,7 +25,28 @@ npm run format
 ```
 docker-compose up --build
 ```
-2. To stop the containers:
+2. Verify that both containers are running:
 ```
-docker-compose down
+docker ps
 ```
+### 3. After the first start, you need to apply database migrations to set up the schema!
+```
+docker exec -it app-container npx prisma migrate deploy
+```
+
+## Testing
+
+After application running in containers open new terminal and enter:
+
+```
+npm run test
+```
+
+
+### Linting
+
+```
+npm run lint
+```
+
+

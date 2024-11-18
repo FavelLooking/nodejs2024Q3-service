@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { v4 as uuid } from 'uuid';
-import { TracksService } from '../tracks/tracks.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()

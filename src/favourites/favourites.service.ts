@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { TracksService } from '../tracks/tracks.service';
 
 @Injectable()
 export class FavouritesService {

@@ -4,69 +4,52 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker
+- Docker Compose
+
 
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/your-repo.git
 ```
-
+```
+cd your-repo
+```
 ## Installing NPM modules
 
 ```
 npm install
 ```
 
-## Running application
+## Containerization with Docker
 
+1. Build and start the containers:
 ```
-npm start
+docker-compose up --build
 ```
-
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/api/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+2. Verify that both containers are running:
+```
+docker ps
+```
+### 3. After the first start, you need to apply database migrations to set up the schema!
+```
+docker exec -it app-container npx prisma migrate deploy
+```
 
 ## Testing
 
-After application running open new terminal and enter:
-
-To run all tests without authorization
+After application running in containers open new terminal and enter:
 
 ```
 npm run test
 ```
 
-To run only one of all test suites
 
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
+### Linting
 
 ```
 npm run lint
 ```
 
-```
-npm run format
-```
 
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging

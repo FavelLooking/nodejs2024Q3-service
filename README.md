@@ -45,6 +45,10 @@ After application running in containers open new terminal and enter:
 npm run test
 ```
 
+## You can pull docker image by this command
+```
+docker pull favellooking/nodejs2024q3-service-app:latest
+```
 
 ### Linting
 

@@ -18,10 +18,8 @@ export class LoggingService {
     } catch (error) {
       console.error('Error creating log directory:', error);
     }
-    console.log(logDir);
     const logPath = path.join(logDir, 'app.log');
     const logMessage = `${new Date().toISOString()} - ${message}\n`;
-    console.log(logMessage);
 
     try {
       await fs.promises.appendFile(logPath, logMessage);

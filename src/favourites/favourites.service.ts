@@ -4,10 +4,6 @@ import { Injectable } from '@nestjs/common';
 export class FavouritesService {
   static favs: Favorites = { artists: [], albums: [], tracks: [] };
 
-  findAll() {
-    return FavouritesService.favs;
-  }
-
   addTrack(track: Track) {
     //   const existingTrack = TracksService.tracks.find((t) => t.id === track.id);
     //   if (!existingTrack) {
@@ -15,6 +11,10 @@ export class FavouritesService {
     //   }
     //   FavouritesService.favs.tracks.push(track);
     //   console.log('Updated tracks in favs:', FavouritesService.favs.tracks);
+  }
+
+  findAll() {
+    return FavouritesService.favs;
   }
 
   addAlbum(album: Album) {

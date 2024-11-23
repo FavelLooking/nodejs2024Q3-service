@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { LoggingService } from '../logging/logging.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly loggingService: LoggingService,
+  ) {}
   async findAll() {
     return await this.prisma.user.findMany();
   }
   async findUserById(id: string) {
+    this.loggingService.log('Chosen one by logger');
+    console.log('Chosen one');
     return this.prisma.user.findUnique({ where: { id } });
   }
   async createNewUser({ login, password }: CreateUserDto) {
@@ -23,6 +29,7 @@ export class UsersService {
       });
       const { password: _, ...userWithoutPassword } = newUser;
       console.log(userWithoutPassword);
+      this.loggingService.log('Creating user...');
       return userWithoutPassword;
     } catch (error) {
       console.error('Error creating user:', error);

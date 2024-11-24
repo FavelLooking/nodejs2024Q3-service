@@ -8,12 +8,6 @@ export class FavouritesService {
 
   addTrack(track: Track) {
     this.loggingService.log(`Attempting to add track with ID: ${track.id}`);
-    //   const existingTrack = TracksService.tracks.find((t) => t.id === track.id);
-    //   if (!existingTrack) {
-    //     throw new Error('Track not found');
-    //   }
-    //   FavouritesService.favs.tracks.push(track);
-    //   console.log('Updated tracks in favs:', FavouritesService.favs.tracks);
   }
 
   findAll() {

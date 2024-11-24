@@ -9,6 +9,7 @@ import { FavouritesModule } from './favourites/favourites.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggingModule } from './logging/logging.module';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { LoggingModule } from './logging/logging.module';
     }),
     PrismaModule,
     LoggingModule,
+    TestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

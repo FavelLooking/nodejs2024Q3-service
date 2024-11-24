@@ -53,11 +53,32 @@ export class LoggingService {
     }
   }
 
-  error(message: string) {
+  error(
+    message: string,
+    details?: string | Record<string, unknown>,
+    trace?: string,
+  ) {
     if (this.shouldLog('error')) {
-      this.logToConsole(`ERROR: ${message}`);
-      this.logToFile(`ERROR: ${message}`);
+      let fullMessage = `ERROR: ${message}`;
+
+      if (details) {
+        const detailsString =
+          typeof details === 'string' ? details : JSON.stringify(details);
+        fullMessage += ` | Details: ${detailsString}`;
+      }
+
+      if (trace) {
+        fullMessage += ` | Trace: ${trace}`;
+      }
+
+      this.logToConsole(fullMessage);
+      this.logToFile(fullMessage);
     }
+  }
+
+  logCriticalError(message: string, stack: string) {
+    console.error(`[ERROR] ${message}`);
+    console.error(stack);
   }
 
   private shouldLog(level: string): boolean {

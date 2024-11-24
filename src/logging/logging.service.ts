@@ -16,15 +16,24 @@ export class LoggingService {
     try {
       await fs.promises.mkdir(logDir, { recursive: true });
     } catch (error) {
-      console.error('Error creating log directory:', error);
+      this.logCriticalError('Error creating log directory:', error.stack);
     }
+
     const logPath = path.join(logDir, 'app.log');
     const logMessage = `${new Date().toISOString()} - ${message}\n`;
 
     try {
+      const stats = await fs.promises.stat(logPath);
+      const maxSize = 1024 * 1024;
+
+      if (stats.size > maxSize) {
+        const archivePath = path.join(logDir, `app-${Date.now()}.log`);
+        await fs.promises.rename(logPath, archivePath);
+      }
+
       await fs.promises.appendFile(logPath, logMessage);
     } catch (error) {
-      console.error('Error writing log to file:', error);
+      this.logCriticalError('Error writing log to file:', error.stack);
     }
   }
 

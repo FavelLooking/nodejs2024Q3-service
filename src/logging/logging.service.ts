@@ -9,7 +9,7 @@ export class LoggingService {
   private logLevel: string;
 
   constructor() {
-    this.logLevel = process.env.LOG_LEVEL || 'info';
+    this.logLevel = process.env.LOG_LEVEL || '0';
   }
 
   private async logToFile(message: string, isError: boolean = false) {
@@ -103,7 +103,16 @@ export class LoggingService {
   }
 
   private shouldLog(level: string): boolean {
-    const levels = ['log', 'info', 'warn', 'error'];
-    return levels.indexOf(level) >= levels.indexOf(this.logLevel);
+    const logLevels = {
+      log: 0,
+      info: 1,
+      warn: 2,
+      error: 3,
+    };
+
+    const configuredLevel = logLevels[this.logLevel.toLowerCase()] || 0;
+    const messageLevel = logLevels[level.toLowerCase()] || 0;
+
+    return messageLevel >= configuredLevel;
   }
 }

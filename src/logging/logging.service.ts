@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class LoggingService {
@@ -10,8 +12,11 @@ export class LoggingService {
     this.logLevel = process.env.LOG_LEVEL || 'info';
   }
 
-  private async logToFile(message: string) {
+  private async logToFile(message: string, isError: boolean = false) {
     const logDir = path.join(process.cwd(), 'logs');
+    const logFilePath = isError
+      ? path.join(logDir, 'error.log')
+      : path.join(logDir, 'app.log');
 
     try {
       await fs.promises.mkdir(logDir, { recursive: true });
@@ -19,22 +24,26 @@ export class LoggingService {
       this.logCriticalError('Error creating log directory:', error.stack);
     }
 
-    const logPath = path.join(logDir, 'app.log');
     const logMessage = `${new Date().toISOString()} - ${message}\n`;
 
     try {
-      await fs.promises.access(logPath, fs.constants.F_OK).catch(async () => {
-        await fs.promises.writeFile(logPath, '');
-      });
-      const stats = await fs.promises.stat(logPath);
-      const maxSize = 1024 * 1024;
+      await fs.promises
+        .access(logFilePath, fs.constants.F_OK)
+        .catch(async () => {
+          await fs.promises.writeFile(logFilePath, '');
+        });
+      const stats = await fs.promises.stat(logFilePath);
+      const maxSize = parseInt(process.env.MAX_FILE_SIZE_MB) * 1024 * 1024;
 
       if (stats.size > maxSize) {
-        const archivePath = path.join(logDir, `app-${Date.now()}.log`);
-        await fs.promises.rename(logPath, archivePath);
+        const archivePath = path.join(
+          logDir,
+          `${isError ? 'error' : 'app'}-${Date.now()}.log`,
+        );
+        await fs.promises.rename(logFilePath, archivePath);
       }
 
-      await fs.promises.appendFile(logPath, logMessage);
+      await fs.promises.appendFile(logFilePath, logMessage);
     } catch (error) {
       this.logCriticalError('Error writing log to file:', error.stack);
     }
@@ -84,7 +93,7 @@ export class LoggingService {
       }
 
       this.logToConsole(fullMessage);
-      this.logToFile(fullMessage);
+      this.logToFile(fullMessage, true);
     }
   }
 

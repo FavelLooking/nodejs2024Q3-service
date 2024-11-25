@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ArtistsService } from './artists.service';
@@ -15,6 +16,7 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { validateUUID } from '../helpers/helpers';
 import { ApiTags } from '@nestjs/swagger';
 import { LoggingService } from '../logging/logging.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('artist')
 @Controller('artist')
@@ -25,6 +27,7 @@ export class ArtistsController {
   ) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async getAllArtists(@Res() res: Response) {
     this.loggingService.log('Fetching all artists');
     const artists = await this.artistsService.findAll();
@@ -32,6 +35,7 @@ export class ArtistsController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async getArtistById(@Param('id') id: string, @Res() res: Response) {
     this.loggingService.log(`Fetching artist with ID: ${id}`);
     if (!validateUUID(id, res)) {
@@ -49,6 +53,7 @@ export class ArtistsController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createArtist(@Body() body: CreateArtistDto, @Res() res: Response) {
     const { name, grammy } = body;
     this.loggingService.log(`Creating artist with name: ${name}`);
@@ -63,6 +68,7 @@ export class ArtistsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() body: UpdateArtistDto,
@@ -88,6 +94,7 @@ export class ArtistsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async deleteArtist(@Param('id') id: string, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       this.loggingService.warn(`Invalid UUID: ${id}`);

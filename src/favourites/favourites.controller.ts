@@ -6,12 +6,14 @@ import {
   Param,
   Delete,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { validateUUID } from '../helpers/helpers';
 import { FavouritesService } from './favourites.service';
 import { ApiTags } from '@nestjs/swagger';
 import { LoggingService } from '../logging/logging.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('favorites')
 @Controller('favs')
@@ -22,6 +24,7 @@ export class FavouritesController {
   ) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getAllFavs(@Res() res: Response) {
     this.loggingService.log('Fetching all favourites');
     const favs = this.favouritesService.findAll();
@@ -30,6 +33,7 @@ export class FavouritesController {
   }
 
   @Post('track/:id')
+  @UseGuards(JwtAuthGuard)
   addTrackToFavs(@Param('id') id: string, @Body() body, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
@@ -45,6 +49,7 @@ export class FavouritesController {
   }
 
   @Post('album/:id')
+  @UseGuards(JwtAuthGuard)
   addAlbumToFavs(@Param('id') id: string, @Body() body, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
@@ -60,6 +65,7 @@ export class FavouritesController {
   }
 
   @Post('artist/:id')
+  @UseGuards(JwtAuthGuard)
   addArtistToFavs(@Param('id') id: string, @Body() body, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
@@ -75,6 +81,7 @@ export class FavouritesController {
   }
 
   @Delete('track/:id')
+  @UseGuards(JwtAuthGuard)
   deleteTrackFromFavs(@Param('id') id: string, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
@@ -86,6 +93,7 @@ export class FavouritesController {
   }
 
   @Delete('album/:id')
+  @UseGuards(JwtAuthGuard)
   deleteAlbumFromFavs(@Param('id') id: string, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;
@@ -97,6 +105,7 @@ export class FavouritesController {
   }
 
   @Delete('artist/:id')
+  @UseGuards(JwtAuthGuard)
   deleteArtistFromFavs(@Param('id') id: string, @Res() res: Response) {
     if (!validateUUID(id, res)) {
       return;

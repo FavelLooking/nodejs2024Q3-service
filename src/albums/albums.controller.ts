@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -15,6 +16,7 @@ import { Response } from 'express';
 import { validateUUID } from '../helpers/helpers';
 import { ApiTags } from '@nestjs/swagger';
 import { LoggingService } from '../logging/logging.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('album')
 @Controller('album')
@@ -25,6 +27,7 @@ export class AlbumsController {
   ) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async getAllAlbums(@Res() res: Response) {
     this.loggingService.log('Fetching all albums');
     const albums = await this.albumsService.findAll();
@@ -33,6 +36,7 @@ export class AlbumsController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async getAlbumById(@Param('id') id: string, @Res() res: Response) {
     this.loggingService.log(`Fetching album with ID: ${id}`);
     if (!validateUUID(id, res)) {
@@ -50,6 +54,7 @@ export class AlbumsController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createAlbum(@Body() body: CreateAlbumDto, @Res() res: Response) {
     this.loggingService.log(`Creating a new album: ${JSON.stringify(body)}`);
     const { name, year } = body;
@@ -64,6 +69,7 @@ export class AlbumsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() body: UpdateAlbumDto,
@@ -87,6 +93,7 @@ export class AlbumsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async deleteAlbums(@Param('id') id: string, @Res() res: Response) {
     this.loggingService.log(`Deleting album with ID: ${id}`);
     if (!validateUUID(id, res)) {

@@ -9,6 +9,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
@@ -17,6 +18,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { LoggingService } from '../logging/logging.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('user')
 @Controller('user')
@@ -27,12 +29,14 @@ export class UsersController {
   ) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async getAllUsers(@Res() res: Response) {
     this.loggingService.log('Fetching all users');
     const users = await this.usersService.findAll();
     return res.status(200).json(users);
   }
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string, @Res() res: Response) {
     this.loggingService.log(`Fetching user with ID: ${id}`);
 
@@ -53,6 +57,7 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createUser(@Body() body: CreateUserDto, @Res() res: Response) {
     const { login, password } = body;
     this.loggingService.log(`Creating user with login: ${login}`);
@@ -67,6 +72,7 @@ export class UsersController {
     }
   }
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async updateUserPassword(
     @Param('id') id: string,
     @Body() body: UpdatePasswordDto,
@@ -96,6 +102,7 @@ export class UsersController {
     }
   }
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Param('id') id: string, @Res() res: Response) {
     this.loggingService.log(`Deleting user with ID: ${id}`);

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { TracksService } from './tracks.service';
@@ -15,6 +16,7 @@ import { UpdateTrackDto } from './dto/update-track.dto';
 import { validateUUID } from '../helpers/helpers';
 import { ApiTags } from '@nestjs/swagger';
 import { LoggingService } from '../logging/logging.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('track')
 @Controller('track')
@@ -25,6 +27,7 @@ export class TracksController {
   ) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async getAllTracks(@Res() res: Response) {
     this.loggingService.log('Fetching all tracks');
     const tracks = await this.tracksService.findAll();
@@ -32,6 +35,7 @@ export class TracksController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async getTrackById(@Param('id') id: string, @Res() res: Response) {
     this.loggingService.log(
       `Start processing request to get track by ID: ${id}`,
@@ -51,6 +55,7 @@ export class TracksController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createTrack(@Body() body: CreateTrackDto, @Res() res: Response) {
     const { name, duration } = body;
     if (!name || !duration) {
@@ -62,6 +67,7 @@ export class TracksController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() body: UpdateTrackDto,
@@ -89,6 +95,7 @@ export class TracksController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async deleteTracks(@Param('id') id: string, @Res() res: Response) {
     this.loggingService.log(`Start deleting track with ID: ${id}`);
     if (!validateUUID(id, res)) {

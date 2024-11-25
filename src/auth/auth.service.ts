@@ -8,6 +8,8 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class AuthService {
@@ -24,7 +26,10 @@ export class AuthService {
       throw new BadRequestException('User with this login already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      parseInt(process.env.CRYPT_SALT),
+    );
 
     const newUser = await this.prisma.user.create({
       data: {
@@ -56,10 +61,15 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid login or password');
     }
+    console.log(process.env.JWT_SECRET_KEY);
 
     const payload = { userId: user.id, login: user.login };
-    const token = await this.jwtService.signAsync(payload);
+    const token = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET_KEY,
+      expiresIn: process.env.TOKEN_EXPIRE_TIME,
+    });
+    console.log('Generated Token:', token);
 
-    return { access_token: token };
+    return { id: user.id, accessToken: token };
   }
 }

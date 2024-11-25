@@ -55,6 +55,13 @@ To run only specific test suite with authorization
 npm run test:auth -- <path to suite>
 ```
 
+## Check Logs folder (inside Docker container)
+```
+docker exec -it app-container sh
+cd app
+cd logs
+```
+
 ### Auto-fix and format
 
 ```

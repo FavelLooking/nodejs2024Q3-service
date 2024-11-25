@@ -61,14 +61,12 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid login or password');
     }
-    console.log(process.env.JWT_SECRET_KEY);
 
     const payload = { userId: user.id, login: user.login };
     const token = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_SECRET_KEY,
       expiresIn: process.env.TOKEN_EXPIRE_TIME,
     });
-    console.log('Generated Token:', token);
 
     return { id: user.id, accessToken: token };
   }

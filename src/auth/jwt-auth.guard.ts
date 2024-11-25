@@ -23,13 +23,11 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     const token = authHeader.split(' ')[1];
-    console.log('Extracted Token:', token);
 
     try {
       const payload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET_KEY,
       });
-      console.log('Token Payload:', payload);
       request.user = payload;
       return true;
     } catch (err) {

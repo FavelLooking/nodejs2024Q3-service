@@ -11,7 +11,7 @@ export class LoggingService {
   }
 
   private async logToFile(message: string) {
-    const logDir = path.join(__dirname, '..', 'logs');
+    const logDir = path.join(process.cwd(), 'logs');
 
     try {
       await fs.promises.mkdir(logDir, { recursive: true });
@@ -23,6 +23,9 @@ export class LoggingService {
     const logMessage = `${new Date().toISOString()} - ${message}\n`;
 
     try {
+      await fs.promises.access(logPath, fs.constants.F_OK).catch(async () => {
+        await fs.promises.writeFile(logPath, '');
+      });
       const stats = await fs.promises.stat(logPath);
       const maxSize = 1024 * 1024;
 

@@ -20,6 +20,8 @@ services:
       - DB_NAME=mydatabase
     depends_on:
       - db
+    volumes:
+      - ./src:/app/src
     networks:
       - app-network
 
